@@ -53,60 +53,24 @@ class APIService {
             } .resume()
         }
     
-    func deleteDevice(id: Int, completion: @escaping(Result<Void, Error>) -> Void) {
+    
+    func deleteDevice(id: Int, completion: @escaping(Result<DeviceDetails, Error>) -> Void) {
             guard let url = URL(string: "https://api.restful-api.dev/objects/\(id)") else {return}
-            print("deleteDevice : \(url)")
-            var request = URLRequest(url: url)
-                request.httpMethod = "DELETE"
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
-                            completion(.failure(error))
-                            return
-                        }
-
-                        guard let http = response as? HTTPURLResponse else {
-                            let err = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid response"])
-                            completion(.failure(err))
-                            return
-                        }
-
-                        if http.statusCode == 200 || http.statusCode == 204 {
-                            completion(.success(()))
-                            return
-                        }
-
-                        if let data = data {
-                            if let apiError = try? JSONDecoder().decode(DeleteErrorResponse.self, from: data) {
-                                let err = NSError(domain: "", code: http.statusCode,
-                                                  userInfo: [NSLocalizedDescriptionKey: apiError.error])
-                                completion(.failure(err))
-                                return
-                            }
-                        }
-
-                        let generic = NSError(domain: "", code: http.statusCode,
-                                              userInfo: [NSLocalizedDescriptionKey: "Unknown error"])
-                        completion(.failure(generic))
+            print("fetchDeviceDetails : \(url)")
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                guard let data = data else {
+                    return
+                }
+                
+                print("data 1 : \(data)")
+                do {
+                    let deviceDetails = try JSONDecoder().decode(DeviceDetails.self, from: data)
+                    print("deviceDetails : \(deviceDetails)")
+                    completion(.success(deviceDetails))
+                }
+                catch {
+                    completion(.failure(error))
+                }
             } .resume()
         }
-    
-//    func deleteDevice(id: Int, completion: @escaping(Result<DeviceDetails, Error>) -> Void) {
-//            guard let url = URL(string: "https://api.restful-api.dev/objects/\(id)") else {return}
-//            print("fetchDeviceDetails : \(url)")
-//            URLSession.shared.dataTask(with: url) { data, response, error in
-//                guard let data = data else {
-//                    return
-//                }
-//                
-//                print("data 1 : \(data)")
-//                do {
-//                    let deviceDetails = try JSONDecoder().decode(DeviceDetails.self, from: data)
-//                    print("deviceDetails : \(deviceDetails)")
-//                    completion(.success(deviceDetails))
-//                }
-//                catch {
-//                    completion(.failure(error))
-//                }
-//            } .resume()
-//        }
     }

@@ -42,9 +42,9 @@ class ViewController: UIViewController {
     
     @objc func subscribeTapped(_ sender: UIButton){
 //        let cell = devicesListTableView.dequeueReusableCell(withIdentifier: "DevicesListTableViewCell") as! DevicesListTableViewCell
-        dataModel.deleteDevice(id: deleteID ?? 0)
+//        dataModel.deleteDevice(id: deleteID ?? 0)
         
-//        self.showToast(message: "2 is a reserved id and the data object of it cannot be deleted. You can create your own new object via POST request and try to send a DELETE request with new generated object id.", font: .systemFont(ofSize: 12.0))
+        self.showToast(message: "2 is a reserved id and the data object of it cannot be deleted. You can create your own new object via POST request and try to send a DELETE request with new generated object id.", font: .systemFont(ofSize: 12.0))
     }
 }
 
